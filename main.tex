@@ -673,7 +673,28 @@ This experiment shows that the constraints of a linear model can prevent AUM min
 
 \subsection{Prediction accuracy and error in cross-validation}
 
-TODO Jon changepoint data figure and discussion.
+TODO talk about test train split.
+Should we say "we split the data" or "we reffered to the folds.csv in the dataset"
+
+Since the optimal $\hat y_i$ for an example $i$ is contained within an optimal interval, Interval Regression was used to create a baseline model. We refer to the output of Interval Regression as our initial model.
+It should be noted that Interval Regression is a randomized algorithm, and the output of it varies with the random seed it is given.
+
+Our first version of our descent included a test/subtrain/validation split.
+The chosen number of iterations for our model was iteration that had the lowest validation AUM.
+However, after noticing this method resulted in a poor selection of the number of iterations for minimizing the test AUM, we transitioned to using K-Fold cross validation with K = 4 folds, and use the iteration that minimized the mean validation AUM as the selected number of iterations for our model.
+This minimized the test AUM most of the time, but still showed some inconsistencies.
+Since we are indirectly trying to optimize the AUC, we selected the model's number of iterations based off of the maximum mean validation AUC, and compared the test AUM/AUC with the chosen iteration.
+
+In Figure~\ref{fig:test-aum-comparison}, we compared these 2 methods to see which one was better for hyperparameter tuning. 
+We used 4 different seeds to select 4 different initial models with Interval Regression, but some of the random seeds resulted in the same initialized weights, despite having different seeds.
+Both hyperparameter tuning methods increase the initial model's AUC and decrease the model's AUM over half of the time, as shown in the middle 3 panels. 
+However, sometimes, the model trained by Interval Regression may have a better AUM or AUC than a model trained through gradient descent. This is shown on the left and right panels, where our gradient descent did not optimize the test AUM or AUC.
+
+
+
+
+
+
 
 
 
@@ -685,11 +706,19 @@ TODO Jon changepoint data figure and discussion.
 \includegraphics[width=\textwidth]{figure-test-aum-comparison.png}
 \includegraphics[width=\textwidth]{figure-test-auc-comparison.png}
 \vskip -0.5cm
-\caption{Testing text}
+\caption{
+Selecting the best number of iterations for our gradient descent method was chosen with two different forms of K-Fold cross validation. 
+On the x axis, we show the test AUM and test AUC on the upper and lower plot respectively.
+On the y axis, we show the hypter parameter tuning method chosen based off of the minimal mean validation AUM, and with the maximal mean validation AUC, and compare it with the test AUM/AUC of the initial model produced by Interval Regression. 
+Each panel column represents a different test fold of a dataset in the neuroblastoma dataset. 
+\textbf{Left:}: The left panel shows a model that selected a worse AUM and worse AUC than the initial model. 
+\textbf{Middle}: The middle 3 panels show results for datasets where our K-Fold cross validation algorithm was successful in optimizing the AUM/AUC. 
+\textbf{Right}: The right panel shows a dataset where our initial model was already at a local minimum of the validation AUM/AUC with 4 different random initializations.}
 \label{fig:test-aum-comparison}
 \end{center}
 \vskip -0.2in
 \end{figure*}
+
 \section{Discussion and conclusions}
 \label{sec:discussion}
 
