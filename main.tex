@@ -98,7 +98,7 @@ ROC curves can also be used in other problems that have false positive and true 
 We show that in this more general context, the ROC curve is not always monotonic, and so if loops are present the Area Under the Curve (AUC) can be greater than one.
 Instead of maximizing the AUC for these problems, we propose to minimize a new loss function called the AUM, short for Area Under Min(FP, FN).
 We show that the AUM gradient can be efficiently computed and used in a new gradient descent learning algorithm.
-In our empirical study of binary classification and changepoint detection problems, we show that our new AUM optimization algorithm results in more accurate models than previous baselines.
+In our empirical study of supervised changepoint detection problems, we show that AUM minimization results in improved AUC relative to previous baselines.
 \end{abstract}
 
 \section{Introduction}
@@ -107,22 +107,33 @@ In machine learning problems such as supervised binary classification and change
 In binary classification there is a prediction for each example; in changepoint detection there is a prediction (change or not) in between each data point in a sequence.
 %Our main goal in this research project is to generate a linear model that yields a higher model performance than previously baseline linear models. 
 There are numerous ways to analyze a model's performance, but the simplest way is to calculate its accuracy, which is the number or proportion of correctly classified labels.
-However, evaluating a model's performance based solely on its classification accuracy has its drawbacks, especially for imbalanced data.
+However using accuracy as the evaluation metric can be problematic for data sets with imbalanced labels or for which the desired weighting of the labels is unknown.
 % For example, consider a data set with a high number of positive labels.
 % One could generate a model with a high accuracy simply by predicted every label to be positive, without any consideration of the features of the instance.
 % This model is essentially useless, as it would never be capable of predicting when an example may have a negative label. 
 
-In these problems TODO ROC.
-A more popular and more general metric, the AUC, can also be used to evaluate a model's performance. When the false positive rate and true positive rate are monotonic, the model can have an AUC in the interval of $[0, 1]$. 
-A random classifier would have an AUC of $0.5$ and a perfect classifier would have an AUC of $1$. 
-The widely accepted use of the AUC being a good performance metric inspired is what inspired us to consider directly optimizing it. 
-However, since the AUC is a nonconvex, nondifferentiable, constant function, it is difficult to optimize.
-Additionally, the AUC may be unbounded above for nonmonotonic ROC curves, as discussed further in section 2.5.
-Thus, maximizing the AUC as an objective function is not always a good approach to training accurate models. 
-Instead of simply maximizing the AUC, it is better to train a model with a perfect model, which would yield an AUC of 1.
+A popular approach for comparing models in this context is by analyzing Receiver Operating Characteristic (ROC) curves, which are plots of True Positive Rate (TPR) versus False Positive Rate (FPR).
+A single prediction vector for model can be visualized as a single point in ROC space; the ROC curve is traced by adding a constant real-valued threshold to each prediction in that vector.
+Large thresholds result in FPR=TPR=1 and small thresholds result in FPR=TPR=0.
+Therefore the Area Under the Curve (AUC) is an evaluation metric which accounts for all possible thresholds or weights for the class labels.
+In typical binary classification problems, a perfect model has an AUC of 1, a random/baseline model has an AUC of 0.5, and the minimum AUC is 0.
 
-This motivates us to use the AUM as an objective function to indirectly optimize the model's ROC curve. Since the AUM is differentiable almost everywhere, it is possible to use a gradient descent approach to optimize it.
+When AUC is used as the evaluation metric in machine learning, the best algorithm is defined as the one that maximizes test AUC (in cross-validation on a specific data set).
+In such experiments we would also like to use the AUC as the objective function for training the model (under the assumption that if the train and test sets are similar, maximizing train AUC should result in maximizing test AUC). 
+However, since the AUC is a piecewise constant function of the predicted values, its gradient is zero almost everywhere, and it is therefore impossible to directly optimize using gradient descent algorithms.
 
+In this paper we study supervised changepoint detection, in which we can compute FPR and TPR as in binary classification.
+For binary classification we can compute a prediction vector which maximizes AUC in the same way as maximizing accuracy --- predict a positive value for each positive label, and a negative value for each negative label.
+For changepoint detection it is also trivial to compute a prediction vector that maximizes accuracy, but it can be non-trivial to compute a prediction vector that maximizes AUC (even for an unconstrained model on the train set).
+This is because in changepoint detection the FPR and TPR may be non-monotonic functions of the predicted values, which means that the ROC curve may have loops.
+
+\subsection{Contributions}
+
+The previous observations motivate our current paper, which explores a new loss function and corresponding optimization algorithm for problems like binary classification and changepoint detection.
+In particular, we study the minimum of false positive and false negative counts as a function of the prediction threshold.
+We propose the Area Under the Minimum (AUM) as a new loss function for use in supervised learning algorithms.
+We give an efficient algorithm for computing directional derivatives of the AUM with respect to predicted values, which we propose using in gradient descent learning algorithms.
+Our empirical study of supervised changepoint detection problems shows that minimizing the AUM corresponds to maximizing the AUC (with respect to train and test sets).
 
 \begin{figure*}[ht]
 \vskip 0.2in
@@ -145,15 +156,16 @@ This motivates us to use the AUM as an objective function to indirectly optimize
 
 TODO Jon citations
 
+Related work on AUC optimization falls into two categories: gradient
+learning algorithms based on re-weighting or approximation, and
+discrete learning algorithms such as decision trees.
+\citet{ferri2002learning} proposed expressions for the expected value
+and the variance of the AUC for a fixed error rate, in the context of
+a decision tree learning algorithm called AUCsplit.
+\citet{yan2003optimizing} proposed a global approximation of AUC which was then used in several other algorithms.
+For example, \citet{castro2008optimization} used that approxmation to propose the AUCtron algorithm which learns a linear model.
+Other algorithms have been proposed to obtain approximations of the global AUC value \citep{yan2003optimizing, rakotomamonjy2004optimizing, herschtal2004optimising, herschtal2006area}.
 \citet{Han2010} proposed an active learning algorithm for computing a linear model that maximizes the AUC.
-
-\citet{castro2008optimization} proposed the AUCtron algorithm which learns a linear model for optimizing AUC based on implicit prior probabilities.
-
-Methods for optimizing the AUC value locally have beendeveloped in the context of decision trees \citep{ferri2002learning}.  Other algo-rithms have been proposed to obtain approximations of the global AUC value such as \citep{yan2003optimizing, rakotomamonjy2004optimizing, herschtal2004optimising, herschtal2006area}
-
-In this paper, we present a detailed analysis of the relationship between AUC and accuracy values based on the expressions of the expected value and the variance of the AUCfor a fixed error rate, as proposed by \citep{ferri2002learning}. Moreover, we propose a new binary classification algorithm, based on gradient descent learning, that directly optimizes AUC from aglobal approximation proposed by \citep{yan2003optimizing}. We compare it witha linear classifier and with AUCsplit proposed by \citep{ferri2002learning}.
-
-
 
 \section{Models and Definitions}
 \label{sec:model}
@@ -582,7 +594,7 @@ Therefore if we assume there are on average $b$ breakpoints in each error functi
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Gradient descent algorithm for linear model}
+\subsection{Gradient descent algorithm for predicted values}
 \label{sec:gradient-descent}
 
 We propose gradient descent optimization algorithms that use the AUM directional derivatives computed using (\ref{eq:directional-derivative}) and Algorithm~\ref{alg:gradient-computation}.
@@ -593,9 +605,27 @@ Since the AUM is non-convex, the initialization of the algorithm is important. T
     \text{FP}_i(x) + 
     \text{FN}_i(x).
 \end{equation}
-After initialization we perform gradient descent updates for each iteration $j\in\{0,1,\dots\}$ via
+After initialization we need to compute a descent direction; typically the negative gradient is used.
+Although the gradient of the AUM is not defined at every prediction vector $\hat y_i^{(j)}$, we have observed that our gradient descent algorithm empirically stays at differentiable points (i.e., columns of directional derivative matrix are equal).
+Therefore we define $\mathbf{\bar D}\in\mathbb R^n$ as one of the two equal columns of the directional derivative matrix, and we use this as the gradient.
+We also perform line search via grid search in order to obtain a step size $\alpha^{(j)}$ which results in the largest decrease in AUM.
+Also let $\beta^{(j)}$ be an intercept or threshold with minimal error after taking the line search step (it only affects the label error/accuracy and not the AUM).
+Note that this intercept can be efficiently computed at the same time as the AUM and its directional derivative matrix, by a simple linear scan over all thresholds.
+We then perform gradient descent updates for each iteration $j\in\{0,1,\dots\}$ via
 \begin{equation}
-    \mathbf{\hat y}^{(j+1)} = \mathbf{\hat y}^{(j)} - \alpha^{(j)} \mathbf {\bar D}_\text{AUM}(\mathbf {\hat y}^{(j)})
+    \mathbf{\hat y}^{(j+1)} = \mathbf{\hat y}^{(j)} - \alpha^{(j)} \mathbf {\bar D}_\text{AUM}(\mathbf {\hat y}^{(j)}) + \beta^{(j)}.
+\end{equation}
+
+\subsection{Gradient descent algorithm for linear model}
+
+In the context of making predictions on a held-out test set, we consider a linear model $f(\mathbf x) = \mathbf w^\intercal \mathbf x$ parameterized by a weight vector $\mathbf w\in\mathbb R^p$ to optimize via gradient descent.
+Let $\mathbf X\in\mathbb R^{n\times p}$ be the feature/input matrix, so $\mathbf X \mathbf w\in\mathbb R^n$ is the vector of predicted values on the train set.
+We consider an intialization $\mathbf{w}^{(0)}$ based on minimizing a convex squared hinge loss with L1 regularization \citep{Hocking2013icml}.
+This convex loss function has a minimum for each example at predicted values that achieve minimum label errors, so we expect this initialization to have large accuracy but not necessarily large AUC.
+Again let $\alpha^{(j)}$ be the line search step size, and let $\beta^{(j)}$ be an intercept with minimal train error.
+We then perform gradient descent updates for each iteration $j\in\{0,1,\dots\}$ via
+\begin{equation}
+    \mathbf{w}^{(j+1)} = \mathbf{w}^{(j)} - \alpha^{(j)}\mathbf X^\intercal \mathbf {\bar D}_\text{AUM}(\mathbf X \mathbf w^{(j)}  + \beta^{(j)}).
 \end{equation}
 
 \begin{algorithm}[tb]
@@ -693,11 +723,21 @@ TODO Jon changepoint data figure and discussion.
 \section{Discussion and conclusions}
 \label{sec:discussion}
 
-TODO One threshold or all of the thresholds?
+In this paper we proposed the new AUM loss function for supervised binary classification and changepoint detection problems.
+We proposed a new algorithm for efficiently computing the AUM and its directional derivatives, then showed how the AUM can be directly optimized in a linear gradient descent learning algorithm. 
 
-TODO Future work: equal weights for fp fn, batch stochastic variant, path following algo, area under something else (maybe remove all ROC points which are sub-optimal to some other point in either FPR or TPR).
+We have shown that in changepoint detection problems with non-monotonic FP/FN functions, there is a tradeoff between AUC and accuracy that does not exist in binary classification problems.
+If maximizing accuracy with respect to the labels is important, we can use existing convex loss functions centered on the predicted values which maximize accuracy.
+If maximizing AUC is important, then we can minimize our new AUM loss function which we have shown empirically results in AUC maximization (but lower accuracy).
+This tradeoff between AUC and accuracy means that the max accuracy model results in a highly non-monotonic ROC curve with many sub-optimal points, whereas the max AUC model has a more regular ROC curve (Figure~\ref{fig:aum-optimized}).
 
-%  or variant which ignores the amount of threshold and instead counts number of thresholds (like ROC only depends on number of thresholds, not the amount) this would amount to removing the        $\tau(\mathbf {\hat y})_{q} - \tau(\mathbf {\hat y})_{q-1}$ term in (\ref{eq:AUM-computation}) -> would not work, piecewise constant so not differentiable, can't use gradient descent.
+% or variant which ignores the amount of threshold and instead counts number of thresholds (like ROC only depends on number of thresholds, not the amount) this would amount to removing the        $\tau(\mathbf {\hat y})_{q} - \tau(\mathbf {\hat y})_{q-1}$ term in (\ref{eq:AUM-computation}) -> would not work, piecewise constant so not differentiable, can't use gradient descent.
+
+For future work, we would like to consider several variants of our new AUM loss function.
+In this work we defined the AUM as the area under the minimum of false positive and false negative \emph{counts}, but we could instead use \emph{rates} which would correspond to assigning equal weights to the two classes of errors.
+In this work we proposed a full gradient algorithm (takes a step defined by all training examples), and we would additionally like to explore a batch variant (takes a step defined by a subset of training examples).
+Finally our current algorithm uses a grid search over step sizes to perform the line search, but that could perhaps be improved by exploiting the piecewise linear nature of the AUM.
+%area under something else (maybe remove all ROC points which are sub-optimal to some other point in either FPR or TPR).
 
 \section*{Software and Data}
 
