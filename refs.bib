@@ -1,3 +1,51 @@
+@inproceedings{calders2007efficient,
+  title={Efficient {AUC} optimization for classification},
+  author={Calders, Toon and Jaroszewicz, Szymon},
+  booktitle={European Conference on Principles of Data Mining and Knowledge Discovery},
+  pages={42--53},
+  year={2007},
+  organization={Springer}
+}
+@Book{Hastie2009,
+  author = 	 {Trevor Hastie and Robert Tibshirani and Jerome Friedman},
+  title = 	 {The elements of statistical learning},
+  publisher = 	 {Springer},
+  year = 	 2009,
+  series = 	 {Springer Series in Statistics},
+  address = 	 {Springer Science+Business Media, LLC, 233 Spring Street, New York NY 10013, USA},
+  edition = 	 {Second}}
+
+@unpublished{yuan2020auc,
+  title={Robust Deep AUC Maximization: A New Surrogate Loss and Empirical Studies on Medical Image Classification},
+  author={Yuan, Zhuoning and Yan, Yan and Sonka, Milan and Yang, Tianbao},
+  note={Preprint arXiv:2012.03173},
+  year={2020}
+}
+
+@unpublished{barnwal2021aftxgboost,
+  title={Survival regression with accelerated failure time model in XGBoost},
+  author={Barnwal, A and Cho, H and Hocking, TD},
+  note={Preprint arXiv:2006.04920},
+  year={2020}
+}
+
+
+
+@unpublished{yuan2021federated,
+  title={Federated Deep AUC Maximization for Heterogeneous Datawith a Constant Communication Complexity},
+  author={Yuan, Zhuoning and Guo, Zhishuai and Xu, Yi and and Ying, Yiming Yang, Tianbao},
+  note={Preprint arXiv:2102.04635},
+  year={2021}
+}
+
+
+
+@misc{asuncion2007uci,
+  title={{UCI} machine learning repository},
+  author={Asuncion, Arthur and Newman, David},
+  year={2007},
+  publisher={Irvine, CA, USA}
+}
 
 
 @article{Han2010,
@@ -13,6 +61,14 @@ author = "Guang Han and Chunxia Zhao",
 keywords = "Obstacle detection, Active learning, AUC maximization, Linear classifier, Dynamic clustering, Gradient descent method"
 }
 
+@unpublished{Vargovich2020arxiv,
+author = {TD Hocking and J Vargovich},
+title = {Linear time dynamic programming for the exact path of optimal models selected from a finite set},
+year = 2020,
+note = {arXiv:2003.02808}
+}
+
+
 @unpublished{Runge2020,
   author = {Runge V and Hocking TD and Romano G and Afghah F and
                   Fearnhead P and Rigaill G},
@@ -20,6 +76,14 @@ keywords = "Obstacle detection, Active learning, AUC maximization, Linear classi
   Detection}},
   year = 2020,
   note = {arXiv:2002.03646}
+}
+
+@inproceedings{joachims2005multivariate,
+  title={A support vector method for multivariate performance measures},
+  author={Joachims, Thorsten},
+  booktitle={Proceedings of the 22nd international conference on Machine learning},
+  pages={377--384},
+  year={2005}
 }
 
 @inproceedings{Hocking2020,
@@ -32,7 +96,7 @@ keywords = "Obstacle detection, Active learning, AUC maximization, Linear classi
 }
 
 @inproceedings{yan2003optimizing,
-  title={Optimizing classifier performance via an approximation to the Wilcoxon-Mann-Whitney statistic},
+  title={Optimizing classifier performance via an approximation to the {Wilcoxon-Mann-Whitney} statistic},
   author={Yan, Lian and Dodier, Robert H and Mozer, Michael and Wolniewicz, Richard H},
   booktitle={Proceedings of the 20th international conference on machine learning (icml-03)},
   pages={848--855},
@@ -57,7 +121,7 @@ keywords = "Obstacle detection, Active learning, AUC maximization, Linear classi
 }
 
 @inproceedings{rakotomamonjy2004optimizing,
-  title={Optimizing Area Under {ROC} Curve with SVMs},
+  title={Optimizing Area Under {ROC} Curve with {SVMs}},
   author={Rakotomamonjy, Alain},
   booktitle={ROCAI},
   pages={71--80},
@@ -83,7 +147,7 @@ keywords = "Obstacle detection, Active learning, AUC maximization, Linear classi
   organization={IEEE}
 }
 
-@inproceedings{Hocking2020,
+@inproceedings{Hocking2020psb,
   title={{Machine Learning Algorithms for Simultaneous Supervised Detection of Peaks in Multiple Samples and Cell Types}},
   author={Toby Dylan Hocking and Guillaume Bourque},
   booktitle={Proc. Pacific Symposium on Biocomputing},
@@ -91,6 +155,17 @@ keywords = "Obstacle detection, Active learning, AUC maximization, Linear classi
   pages = {367--378},
   year={2020}
 }
+
+@article{Hocking2020jmlr,
+  author  = {Toby Dylan Hocking and Guillem Rigaill and Paul Fearnhead and Guillaume Bourque},
+  title   = {{Constrained Dynamic Programming and Supervised Penalty Learning Algorithms for Peak Detection in Genomic Data}},
+  journal = {Journal of Machine Learning Research},
+  year    = {2020},
+  volume  = {21},
+  number  = {87},
+  pages   = {1--40}
+}
+
 
 @article{Hocking2019,
   author = {Toby Dylan Hocking},
@@ -156,6 +231,16 @@ note = {arXiv:1703.03352}
     issn = {1367-4803},
 }
 
+@article{Liehrmann2021chipseq,
+  title={Increased peak detection accuracy in over-dispersed {ChIP-seq} data with supervised segmentation models},
+  author={Liehrmann, Arnaud and Rigaill, Guillem and Hocking, Toby Dylan},
+  journal={BMC Bioinformatics},
+  volume={22},
+  number={323},
+  year={2021}
+}
+
+
 @incollection{Drouin2017,
 title = {Maximum Margin Interval Trees},
 author = {Drouin, Alexandre and Hocking, Toby and Laviolette, Francois},
@@ -163,8 +248,7 @@ booktitle = {Advances in Neural Information Processing Systems 30},
 editor = {I. Guyon and U. V. Luxburg and S. Bengio and H. Wallach and R. Fergus and S. Vishwanathan and R. Garnett},
 pages = {4947--4956},
 year = {2017},
-publisher = {Curran Associates, Inc.},
-url = {http://papers.nips.cc/paper/7080-maximum-margin-interval-trees.pdf}
+publisher = {Curran Associates, Inc.}
 }
 
 @Article{Maidstone2016,
@@ -215,3 +299,32 @@ issn="1573-1375"
   volume = 	 14,
   number = 	 164,
   month = 	 {May}}
+  
+@inproceedings{zhao2011online,
+  title={Online {AUC} maximization},
+  author={Zhao, Peilin and Hoi, Steven CH and Jin, Rong and Yang, Tianbo},
+  year={2011},
+  booktitle={28th international conference on machine learning}
+}
+
+@article{cortes2004auc,
+  title={{AUC} optimization vs. error rate minimization},
+  author={Cortes, Corinna and Mohri, Mehryar},
+  journal={Advances in neural information processing systems},
+  volume={16},
+  number={16},
+  pages={313--320},
+  year={2004},
+  publisher={MIT Press}
+}
+
+@article{wang2015optimizing,
+  title={Optimizing area under the ROC curve using semi-supervised learning},
+  author={Wang, Shijun and Li, Diana and Petrick, Nicholas and Sahiner, Berkman and Linguraru, Marius George and Summers, Ronald M},
+  journal={Pattern recognition},
+  volume={48},
+  number={1},
+  pages={276--287},
+  year={2015},
+  publisher={Elsevier}
+}
